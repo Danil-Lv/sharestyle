@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'style.apps.StyleConfig',
     'rest_framework',
-    'drf_yasg'
+    'rest_framework.authtoken',
+    'drf_yasg',
+    'djoser'
 ]
 
 MIDDLEWARE = [
@@ -133,3 +135,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2
+}

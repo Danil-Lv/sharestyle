@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import *
 from django.utils.safestring import mark_safe
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+from .models import *
 
 
 class StyleItemsInline(admin.TabularInline):
@@ -49,7 +50,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password", "image", "show_image_inside")}),
         (("Личная информация"), {"fields": ("first_name", "last_name", "email", "instagram", "telegram", "whatsapp")}),
-        (('Подписки'), {'fields': ('favorites',)}),
+        (('Подписки'), {'fields': ('subscriptions',)}),
         (
             ("Права доступа"),
             {

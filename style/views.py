@@ -2,12 +2,10 @@ from rest_framework.generics import ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView, RetrieveUpdateAPIView, CreateAPIView
 from rest_framework import permissions
 
-from .models import Style, User, Item
+from .models import Style, Item
 from .permissions import IsOwnerOrReadOnly
-from .serializers import StyleSerializer, UserSerializer, ItemSerializer
+from .serializers import StyleSerializer, ItemSerializer
 
-
-# Create your views here.
 
 class StyleListAPIView(ListCreateAPIView):
     """Вывод/создание  стилей"""
@@ -25,16 +23,6 @@ class StyleAPIDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Style.objects.all()
     serializer_class = StyleSerializer
     permission_classes = (IsOwnerOrReadOnly,)
-
-
-class UserApiView(RetrieveUpdateAPIView):
-    """Вывод/изменение профиля пользователя"""
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (IsOwnerOrReadOnly,)
-    lookup_field = 'username'
-
-
 
 
 class ItemAPIView(ListCreateAPIView):

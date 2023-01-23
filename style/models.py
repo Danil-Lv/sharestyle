@@ -1,27 +1,13 @@
 from django.db import models
-from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 
+from profiles.models import User
 from .utils import make_slug
 
 
-class User(AbstractUser):
-    """Пользователь"""
-    # прописать валидацию username
-    username = models.CharField(max_length=150, unique=True, db_index=True)
-    favorites = models.ManyToManyField('Style', blank=True, related_name='users_added', verbose_name='Избранное')
-    subscriptions = models.ManyToManyField('self', verbose_name='Подписки', blank=True, symmetrical=False,
-                                           related_name='subscribers')
-    description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='users_photo', blank=True)
-    telegram = models.CharField(max_length=80, blank=True)
-    instagram = models.URLField(max_length=80, blank=True)
-    whatsapp = models.URLField(max_length=80, blank=True)
-
-
 class Category(models.Model):
+    """Категория"""
     title = models.CharField(max_length=50, unique=True)
-
     # slug
 
     def __str__(self):
@@ -33,6 +19,7 @@ class Category(models.Model):
 
 
 class Tag(models.Model):
+    """Тег"""
     title = models.CharField(max_length=30, unique=True)
 
     def __str__(self):
@@ -44,6 +31,7 @@ class Tag(models.Model):
 
 
 class Style(models.Model):
+    """Стиль"""
     MALE = 'M'
     FEMALE = 'F'
     UNISEX = 'U'
@@ -55,7 +43,8 @@ class Style(models.Model):
     ]
 
     title = models.CharField(max_length=80, verbose_name='Заголовок')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='styles', editable=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='styles',
+                               editable=False)
     description = models.TextField(verbose_name='Описание', blank=True)
     items = models.ManyToManyField('Item', related_name='styles', verbose_name='Одежда')
     total_price = models.PositiveIntegerField(verbose_name='Цена')
@@ -72,8 +61,8 @@ class Style(models.Model):
         self.slug = make_slug(self.title)
         return super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
-        return reverse('style', kwargs={'slug': self.request.slug})
+    # def get_absolute_url(self):
+    #     return reverse('style', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name_plural = 'Стили'
@@ -81,6 +70,7 @@ class Style(models.Model):
 
 
 class Item(models.Model):
+    """Вещь"""
     MALE = 'M'
     FEMALE = 'F'
     UNISEX = 'U'
@@ -95,7 +85,8 @@ class Item(models.Model):
     price = models.PositiveIntegerField(verbose_name='Цена')
     image = models.ImageField(upload_to='items/%Y/%m/%d', verbose_name='Фото')
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, verbose_name='Пол')
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='clothes', null=True, verbose_name='Автор', editable=False)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='clothes', null=True, verbose_name='Автор',
+                               editable=False)
     description = models.TextField(verbose_name='Описание', blank=True)
     slug = models.SlugField(unique=True, verbose_name='Ссылка')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')

@@ -28,6 +28,10 @@ DEBUG = True
 ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'profiles.User'
 
+# ABSOLUTE_URL_OVERRIDES = {
+#     'style.item': lambda rec: f"item/{rec.pk}"
+# }
+
 
 # Application definition
 

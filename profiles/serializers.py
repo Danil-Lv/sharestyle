@@ -33,3 +33,9 @@ class SubscribersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'pk')
+
+
+class FollowersSerializer(serializers.Serializer):
+    """Добавление в подписчики"""
+    username = serializers.CharField(max_length=150)
+

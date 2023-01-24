@@ -37,7 +37,7 @@ class ItemAdmin(admin.ModelAdmin):
             return mark_safe("<img src='{}' width='60' />".format(obj.image.url))
         return None
 
-    show_image.__name__ = 'Изображение'
+    show_image.short_description = 'Изображение'
 
 
 admin.site.register(Category)

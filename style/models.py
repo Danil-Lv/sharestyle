@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models import CheckConstraint, Q, UniqueConstraint
 
 from profiles.models import User
 from .utils import make_slug
+
 
 
 class Category(models.Model):
@@ -61,12 +63,10 @@ class Style(models.Model):
         self.slug = make_slug(self.title)
         return super().save(*args, **kwargs)
 
-    # def get_absolute_url(self):
-    #     return reverse('style', kwargs={'slug': self.slug})
-
     class Meta:
         verbose_name_plural = 'Стили'
         verbose_name = 'Стиль'
+
 
 
 class Item(models.Model):
@@ -88,7 +88,7 @@ class Item(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='clothes', null=True, verbose_name='Автор',
                                editable=False)
     description = models.TextField(verbose_name='Описание', blank=True)
-    slug = models.SlugField(unique=True, verbose_name='Ссылка')
+    slug = models.SlugField(verbose_name='Ссылка', blank=True, unique=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
     ref_url = models.URLField(verbose_name='Реф. ссылка')
 
@@ -102,4 +102,10 @@ class Item(models.Model):
     class Meta:
         verbose_name_plural = 'Вещи'
         verbose_name = 'Вещь'
+        get_latest_by = 'created_at'
+        constraints = [
+            CheckConstraint(check=Q(price__lte=1000), name='price_constraint', violation_error_message='Прайс высокий'),
+            UniqueConstraint(fields=('title', 'price'), name='title_price_constraint', violation_error_message='Поля меняй')
+        ]
+
         # ordering = ['-created_at'] # сортировка по умолчанию

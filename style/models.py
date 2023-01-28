@@ -44,13 +44,12 @@ class Style(models.Model):
         (UNISEX, 'Унисекс')
     ]
 
-    title = models.CharField(max_length=80, verbose_name='Заголовок')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='styles',
-                               editable=False)
+    title = models.CharField(max_length=150, verbose_name='Заголовок')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='styles')
     description = models.TextField(verbose_name='Описание', blank=True)
     items = models.ManyToManyField('Item', related_name='styles', verbose_name='Одежда')
     total_price = models.PositiveIntegerField(verbose_name='Цена')
-    slug = models.SlugField(unique=True, verbose_name='Ссылка')
+    slug = models.SlugField(unique=True, verbose_name='Ссылка', blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     categories = models.ManyToManyField('Category', related_name='styles', verbose_name='Категории')
     tags = models.ManyToManyField('Tag', related_name='styles', verbose_name='Теги', blank=True)
@@ -103,9 +102,24 @@ class Item(models.Model):
         verbose_name_plural = 'Вещи'
         verbose_name = 'Вещь'
         get_latest_by = 'created_at'
-        constraints = [
-            CheckConstraint(check=Q(price__lte=1000), name='price_constraint', violation_error_message='Прайс высокий'),
-            UniqueConstraint(fields=('title', 'price'), name='title_price_constraint', violation_error_message='Поля меняй')
-        ]
+        # constraints = [
+        #     CheckConstraint(check=Q(price__lte=1000), name='price_constraint', violation_error_message='Прайс высокий'),
+        #     UniqueConstraint(fields=('title', 'price'), name='title_price_constraint', violation_error_message='Поля меняй')
+        # ]
 
         # ordering = ['-created_at'] # сортировка по умолчанию
+
+
+class Review(models.Model):
+    text = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='reviews', verbose_name='Пользователь', null=True , blank=True)
+    style = models.ForeignKey(Style, on_delete=models.CASCADE, related_name='reviews', verbose_name='Стиль', blank=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return f'{self.author} - {self.style}'

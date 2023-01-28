@@ -39,3 +39,15 @@ class FollowersSerializer(serializers.Serializer):
     """Добавление в подписчики"""
     username = serializers.CharField(max_length=150)
 
+
+# class ItemSerializerUser(serializers.ModelSerializer):
+#     # items = serializers.SlugRelatedField(many=True, get_queryset=Style.objects.all())
+#     #
+#     class Meta:
+#         model = Item
+#
+#         fields = ('title', 'slug', 'image', 'price')
+#         extra_kwargs = {
+#             'title': {'source': 'slug', 'read_only': True}
+#         }
+
